@@ -53,8 +53,9 @@ Submit an order. The order is submitted to relay as a JSON object, this JSON wil
   - `tokenB` - Token to buy.
   - `amountS` - Maximum amount of tokenS to sell.
   - `amountB` - Minimum amount of tokenB to buy if all amountS sold.
-  - `expiration` - Indicating when this order will expire.
-  - `rand` - A random number to make this order's hash unique.
+  - `timestamp` - Indicating when this order is created.
+  - `ttl` - How long, in seconds, will this order live.
+  - `salt` - A random number to make this order's hash unique.
   - `lrcFee` - Max amount of LRC to pay for miner. The real amount to pay is proportional to fill amount.
   - `buyNoMoreThanAmountB` - If true, this order does not accept buying more than `amountB`.
   - `savingSharePercentage` - The percentage of savings paid to miner.
@@ -69,8 +70,9 @@ params: {
   "tokenB" : "Lrc",
   "amountS" : 100.3,
   "amountB" : 3838434,
-  "expiration" 1406014710,
-  "rand" : 3848348,
+  "timestamp" 1406014710,
+  "ttl": 1200,
+  "salt" : 3848348,
   "lrcFee" : 20,
   "buyNoMoreThanAmountB" : true,
   "savingSharePercentage" : 50, // 0~100
@@ -159,7 +161,8 @@ params: ["0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad"]
   - `tokenB` - Token to buy.
   - `amountS` - Maximum amount of tokenS to sell.
   - `amountB` - Minimum amount of tokenB to buy if all amountS sold.
-  - `expiration` - Indicating when this order will expire.
+  - `timestamp` - Indicating when this order is created.
+  - `ttl` - How long, in seconds, will this order live.
   - `rand` - A random number to make this order's hash unique.
   - `lrcFee` - Max amount of LRC to pay for miner. The real amount to pay is proportional to fill amount.
   - `buyNoMoreThanAmountB` - If true, this order does not accept buying more than `amountB`.
@@ -190,8 +193,9 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
       "tokenB" : "Lrc",
       "amountS" : 100.3,
       "amountB" : 3838434,
-      "expiration" : "2017-11-11 19:00:01",
-      "rand" : 3848348,
+      "timestamp" : "2017-10-11 19:00:01",
+      "ttl": 1200,
+      "salt" : 3848348,
       "lrcFee" : 20,
       "buyNoMoreThanAmountB" : true,
       "savingSharePercentage" : 50, // 0~100
@@ -258,7 +262,8 @@ params: {
   - `tokenB` - Token to buy.
   - `amountS` - Maximum amount of tokenS to sell.
   - `amountB` - Minimum amount of tokenB to buy if all amountS sold.
-  - `expiration` - Indicating when this order will expire.
+  - `timestamp` - Indicating when this order is created.
+  - `ttl` - How long, in seconds, will this order live.
   - `rand` - A random number to make this order's hash unique.
   - `lrcFee` - Max amount of LRC to pay for miner. The real amount to pay is proportional to fill amount.
   - `buyNoMoreThanAmountB` - If true, this order does not accept buying more than `amountB`.
@@ -289,8 +294,9 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
         "tokenB" : "Lrc",
         "amountS" : 100.3,
         "amountB" : 3838434,
-        "expiration" : "2017-11-11 19:00:01",
-        "rand" : 3848348,
+        "timestamp" : "2017-11-11 19:00:01",
+        "ttl": 1200,
+        "salt" : 3848348,
         "lrcFee" : 20,
         "buyNoMoreThanAmountB" : true,
         "savingSharePercentage" : 50, // 0~100
