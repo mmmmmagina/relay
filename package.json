@@ -1,0 +1,25 @@
+{
+  "name": "relay",
+  "version": "1.0.0",
+  "description": "a relay for loopring",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmmmmagina/relay.git"
+  },
+  "keywords": [
+    "relay"
+  ],
+  "author": "wuxiaolu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmmmmagina/relay/issues"
+  },
+  "homepage": "https://github.com/mmmmmagina/relay#readme",
+  "dependencies": {
+    "jayson": "^2.0.4"
+  }
+}
