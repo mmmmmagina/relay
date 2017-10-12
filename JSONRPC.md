@@ -70,7 +70,7 @@ params: {
   "tokenB" : "Lrc",
   "amountS" : 100.3,
   "amountB" : 3838434,
-  "timestamp" 1406014710,
+  "timestamp" 0x1406014710,
   "ttl": 1200,
   "salt" : 3848348,
   "lrcFee" : 20,
@@ -193,7 +193,7 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
       "tokenB" : "Lrc",
       "amountS" : 100.3,
       "amountB" : 3838434,
-      "timestamp" : "2017-10-11 19:00:01",
+      "timestamp" : 0x2034932498,
       "ttl": 1200,
       "salt" : 3848348,
       "lrcFee" : 20,
@@ -280,7 +280,7 @@ params: {
 ##### Example
 ```js
 // Request
-curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params":{see above},"id":64}'
+curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrders","params":{see above},"id":64}'
 
 // Result
 {
@@ -294,7 +294,7 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
         "tokenB" : "Lrc",
         "amountS" : 100.3,
         "amountB" : 3838434,
-        "timestamp" : "2017-11-11 19:00:01",
+        "timestamp" : 0x232323,
         "ttl": 1200,
         "salt" : 3848348,
         "lrcFee" : 20,
@@ -486,7 +486,7 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getFills","params":{see 
         "txHash" : "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238",
         "fillAmountS" : 20,
         "fillAmountB" : 30.21,
-        "ts" : 1506014710000
+        "ts" : 0x1506014710000
       }
     ],
     "pageIndex" : 1,
@@ -545,7 +545,7 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getCandleTicks","params"
       {
         "fillAmountS" : 20,
         "fillAmountB" : 30.21,
-        "ts" : 1506014710000
+        "ts" : 0x1506014710000
         "open" : 3232.1,
         "close" : 2321,
         "high" : 1231.2,
