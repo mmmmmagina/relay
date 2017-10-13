@@ -20,6 +20,13 @@
   },
   "homepage": "https://github.com/mmmmmagina/relay#readme",
   "dependencies": {
-    "jayson": "^2.0.4"
+    "dotenv": "^4.0.0",
+    "figlet": "^1.2.0",
+    "ipfs-api": "^14.3.5",
+    "jayson": "^2.0.4",
+    "mongodb": "^2.2.31",
+    "mongoose": "^4.12.1",
+    "socket.io": "^2.0.3",
+    "web3": "^1.0.0-beta.23"
   }
 }

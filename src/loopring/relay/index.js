@@ -1,41 +1,68 @@
-const http = require('http');
-var jayson = require('jayson');
+'use strict'
 
 
-const hostname = '127.0.0.1';
-const port = 3000;
+require('dotenv').config();
 
-var methods = {
-    add: function(args, callback) {
-        callback(null, args[0] + args[1]);
+const jsonrpc = require('./client/jsonrpc');
+const WebsocketClient = require('./client/websocket');
+const program = require('commander');
+const fs = require('fs');
+const join = require('path').join;
+const mongoose = require("mongoose");
+const ethProxy = require('proxy/eth');
+const ipfsProxy = require('proxy/ipfs');
+
+
+var configs = {
+    test : {
+        eth: "https://infuranet.infura.io/RjAjeUYlo9jXI6J4xgyE",
+        ipfs: ['localhost', '5001', {protocol: 'http'}],
+        mongo : "mongodb://localhost/loopring",
+        websocket : 3008
     },
-    divse : function (args, callback) {
-        callback(null, args[0] - args[1]);
+    prod : {
+        eth: "",
+        ipfs: "",
+        mongo : ""
     }
-};
+}
 
-var server = jayson.server(methods, {
-    router : function (method, params) {
-        console.log(method);
-        console.log(this._methods);
-        console.log(this._methods[method]);
-        console.log(typeof(this._methods[method]));
-        if (typeof(this._methods[method]) === "function")
-            return this._methods[method];
-        if (method === 'add_2') {
-            var fn = server.getMethod('add').getHandler();
-            return new jayson.Method(function (args , done) {
-                args.unshift(2);
-                fn(args, done);
-            })
-        }
+var mode = "";
+
+program.parse(process.argv);
+if (program.args.length == 1) {
+    mode = program.args[0];
+    if (mode !== "test" && mode !== "prod") {
+        console.log("wrong mode, please try test|prod");
+        return;
     }
+} else {
+    console.log("wrong input length , please try : node index.js MODE (test|prod)");
+    return;
+}
+
+//==========================> start jsonrpc
+jsonrpc.start(configs[mode].eth);
+//TODO start websocket
+
+//==========================> init mongoose model and mongo collection
+const models = join(__dirname, 'model');
+fs.readdirSync(models)
+    .filter(file => ~file.search(/^[^\.].*\.js$/))
+    .forEach(file => require(join(models, file)));
+
+mongoose.connect(configs[mode].mongo, {
+    useMongoClient: true
 });
 
-server.http().listen(3000, () => {
-    console.log('Server running at 300');
-});
+//==========================> start eth proxy
+ethProxy.start(configs[mode].eth);
+//==========================> start ipfs proxy
+ipfsProxy.start(configs[mode].ipfs);
 
-// server.listen(port, hostname, () => {
-//   console.log(`Server running at http://${hostname}:${port}/`);
-// });
+console.log("   _                                                         _\n" +
+    " | |    ___   ___   ___   ___   ___   ___   ___  _ __  _ __(_)_ __   __ _\n" +
+    " | |   / _ \\ / _ \\ / _ \\ / _ \\ / _ \\ / _ \\ / _ \\| '_ \\| '__| | '_ \\ / _` |\n" +
+    " | |__| (_) | (_) | (_) | (_) | (_) | (_) | (_) | |_) | |  | | | | | (_| |\n" +
+    " |_____\\___/ \\___/ \\___/ \\___/ \\___/ \\___/ \\___/| .__/|_|  |_|_| |_|\\__, |\n" +
+    "                                                |_|                 |___/");
