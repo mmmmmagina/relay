@@ -412,6 +412,7 @@ params: {
 5. `buy`
 6. `sell`
 7. `ts` - Timestamp.
+8. `change`
 
 ##### Example
 ```js
@@ -429,7 +430,8 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_ticker","params":{see ab
     "vol" : 1038,
     "buy" : 122321,
     "sell" : 12388,
-    "ts" : 1506014710000
+    "ts" : 1506014710000,
+    "change" : -7.00
   }
 }
 ```
