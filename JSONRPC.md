@@ -444,16 +444,14 @@ Get order fill history. This hisotry consists of OrderFilled events.
 
 ##### Parameters
 
-1. `tokenS` - The token to sell
-2. `tokenB` - The token to buy
-3. `address`
-4. `pageIndex`
-5. `pageSize`
+1. `tokenPair` - The exchange toke pair, like `LRC-ETH`.
+2. `address`
+3. `pageIndex`
+4. `pageSize`
 
 ```js
 params: {
-  "tokenS" : "Eth",
-  "tokenB" : "Lrc"
+  "tokenPair" : "Lrc-Eth",
   "address" : "0x8888f1f195afa192cfee860698584c030f4c9db1",
   "pageIndex" : 1,
   "pageSize" : 20 // max size is 50.
