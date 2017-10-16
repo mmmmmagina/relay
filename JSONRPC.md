@@ -51,8 +51,8 @@ Submit an order. The order is submitted to relay as a JSON object, this JSON wil
   - `address` - Order submit address
   - `tokenS` - Token to sell.
   - `tokenB` - Token to buy.
-  - `amountS` - Maximum amount of tokenS to sell.
-  - `amountB` - Minimum amount of tokenB to buy if all amountS sold.
+  - `amountS` - Maximum hex string amount of tokenS to sell.
+  - `amountB` - Minimum hex string amount of tokenB to buy if all amountS sold.
   - `timestamp` - Indicating when this order is created.
   - `ttl` - How long, in seconds, will this order live.
   - `salt` - A random number to make this order's hash unique.
@@ -68,8 +68,8 @@ params: {
   "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
   "tokenS" : "Eth",
   "tokenB" : "Lrc",
-  "amountS" : 100.3,
-  "amountB" : 3838434,
+  "amountS" : "0x28",
+  "amountB" : "0x2acd38d8ef93",
   "timestamp" 1406014710,
   "ttl": 1200,
   "salt" : 3848348,
@@ -159,8 +159,8 @@ params: ["0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad"]
   - `address` - Order submit address
   - `tokenS` - Token to sell.
   - `tokenB` - Token to buy.
-  - `amountS` - Maximum amount of tokenS to sell.
-  - `amountB` - Minimum amount of tokenB to buy if all amountS sold.
+  - `amountS` - Maximum hex string amount of tokenS to sell.
+  - `amountB` - Minimum hex string amount of tokenB to buy if all amountS sold.
   - `timestamp` - Indicating when this order is created.
   - `ttl` - How long, in seconds, will this order live.
   - `rand` - A random number to make this order's hash unique.
@@ -191,9 +191,9 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
       "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
       "tokenS" : "Eth",
       "tokenB" : "Lrc",
-      "amountS" : 100.3,
-      "amountB" : 3838434,
-      "timestamp" : "2017-10-11 19:00:01",
+      "amountS" : "0x2acd38d8ef93",
+      "amountB" : "0x2acd38d8ef93",
+      "timestamp" :1506014710,
       "ttl": 1200,
       "salt" : 3848348,
       "lrcFee" : 20,
@@ -202,26 +202,26 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
       "v" : 112,
       "r" : "239dskjfsn23ck34323434md93jchek3",
       "s" : "dsfsdf234ccvcbdsfsdf23438cjdkldy",
-      "ts" : 1506014710000
+      "ts" : 1506014710
     },
     "status" : "PartiallyExecuted",
-    "totalDealedAmountS" : 30,
-    "totalDealedAmountB" : 29333.21,
+    "totalDealedAmountS" : 0x2acd38d8ef93,
+    "totalDealedAmountB" : 0x2acd38d8ef93,
     "matchList" : {
       "total" : 301,
       "pageIndex" : 2,
       "pageSize" : 20
       "data" : [
         {
-          "ts" : "1506014710000",
-          "amountS" : 30.31,
-          "amountB" : 3934.111,
+          "ts" : 1506014710,
+          "amountS" : "0x2acd38d8ef93",
+          "amountB" : "0x2acd38d8ef93",
           "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
         },
         {
           "ts" : "1506014710323",
-          "amountS" : 30.31,
-          "amountB" : 3934.111,
+          "amountS" : "0x2acd38d8ef93",
+          "amountB" : "0x2acd38d8ef93",
           "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
         }
       ]
@@ -260,8 +260,8 @@ params: {
   - `address` - Order submit address
   - `tokenS` - Token to sell.
   - `tokenB` - Token to buy.
-  - `amountS` - Maximum amount of tokenS to sell.
-  - `amountB` - Minimum amount of tokenB to buy if all amountS sold.
+  - `amountS` - Maximum hex string amount of tokenS to sell.
+  - `amountB` - Minimum hex string amount of tokenB to buy if all amountS sold.
   - `timestamp` - Indicating when this order is created.
   - `ttl` - How long, in seconds, will this order live.
   - `rand` - A random number to make this order's hash unique.
@@ -292,9 +292,9 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
         "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
         "tokenS" : "Eth",
         "tokenB" : "Lrc",
-        "amountS" : 100.3,
-        "amountB" : 3838434,
-        "timestamp" : "2017-11-11 19:00:01",
+        "amountS" : "0x2acd38d8ef93",
+        "amountB" : "0x2acd38d8ef93",
+        "timestamp" : 15023423948,
         "ttl": 1200,
         "salt" : 3848348,
         "lrcFee" : 20,
@@ -313,15 +313,15 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
         "pageSize" : 20
         "data" : [
           {
-            "ts" : "1506014710000",
-            "amountS" : 30.31,
-            "amountB" : 3934.111,
+            "ts" : 1506014710,
+            "amountS" : "0x2acd38d8ef93",
+            "amountB" : "0x2acd38d8ef93",
             "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
           },
           {
             "ts" : "1506014710323",
-            "amountS" : 30.31,
-            "amountB" : 3934.111,
+            "amountS" : "0x2acd38d8ef93",
+            "amountB" : "0x2acd38d8ef93",
             "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
           }
         ]
@@ -373,10 +373,10 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getDepth","params":{see
   "result": {
     "depth" : {
       "buy" : [
-        [200.1, 10.3], [199.8, 2], [198.3, 23]
+        ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"]
       ],
       "sell" : [
-        [205.1, 13], [211.8, 0.5], [321.3, 33]
+        ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"]
       ]
     },
     "accuracies" : [0.01, 0.05, 0.1, 0.5]
@@ -424,13 +424,17 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_ticker","params":{see ab
   "id":64,
   "jsonrpc": "2.0",
   "result": {
-    "high" : 30384.2,
-    "low" : 19283.2,
+    "high" : "0x2acd38d8ef93",
+    "low" : "0x2acd38d8ef93",
     "last" : 28002.2,
     "vol" : 1038,
     "buy" : 122321,
     "sell" : 12388,
     "ts" : 1506014710000,
+    "change" : -7.00
+    "buy" : "0x2acd38d8ef93",
+    "sell" : "0x2acd38d8ef93",
+    "ts" : 1506014710,
     "change" : -7.00
   }
 }
@@ -485,8 +489,8 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getFills","params":{see 
     "data" : [
       {
         "txHash" : "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238",
-        "fillAmountS" : 20,
-        "fillAmountB" : 30.21,
+        "fillAmountS" : "0x23498343248",
+        "fillAmountB" : "0x23498343248",
         "isBuy" : true,
         "ts" : 1506014710000
       }
@@ -545,13 +549,13 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getCandleTicks","params"
   "result": {
     "data" : [
       {
-        "fillAmountS" : 20,
-        "fillAmountB" : 30.21,
-        "ts" : 1506014710000
-        "open" : 3232.1,
-        "close" : 2321,
-        "high" : 1231.2,
-        "low" : 1234.2
+        "fillAmountS" : "0x23498343248",
+        "fillAmountB" : "0x23498343248",
+        "ts" : 1506014710
+        "open" : "0x23498343248",
+        "close" : "0x23498343248",
+        "high" : "0x23498343248",
+        "low" : "0x23498343248",
       }
     ]
   }
@@ -612,10 +616,10 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getCandleTicks","params"
             "blockNumber" : 2345223,
             "prevOrderHash" : "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238",
             "nextOrderHash" : "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238",
-            "amountS" : 34.2,
-            "amountB" : 38.1,
-            "lrcReward" : 0.2,
-            "lrcFee" : 0.31
+            "amountS" : "0x23498343248",
+            "amountB" : "0x23498343248",
+            "lrcReward" : "0x23498343248",
+            "lrcFee" : "0x23498343248"
           }
         ]
        }

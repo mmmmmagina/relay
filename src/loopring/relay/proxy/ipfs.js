@@ -28,6 +28,11 @@ module.exports.publish = function(order, callback) {
             callback("broadcast failed " + err);
         }
         console.log("broadcast success");
+        var toSave = new Order(order);
+        order.save(function (err) {
+            console.log("saved ?????");
+            console.log(err);
+        });
         callback("broadcast success");
     });
 };
@@ -36,6 +41,7 @@ const orderSubmitted = (msg) => {
     console.log("subscribe messsssssssssage received");
     var conveted = JSON.parse(msg.data.toString());
     var order = new Order(conveted);
+    order.toIpfsMsg;
     console.log(order);
 
     order.save(function (err) {
@@ -58,7 +64,7 @@ const orderCanceled = (msg) => {
 }
 
 var topics = module.exports.topics = {
-    LOOPRING_ORDER_SUBMITTED : orderSubmitted,
+    // LOOPRING_ORDER_SUBMITTED : orderSubmitted,
     LOOPRING_ORDER_CANCELED : orderCanceled
 };
 

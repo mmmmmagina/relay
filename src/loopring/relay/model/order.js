@@ -9,18 +9,20 @@ const Schema = mongoose.Schema;
  */
 
 const OrderSchema = new Schema({
+    protocol: { type : String, default : '', trim : true },
     address: { type : String, default : '', trim : true },
+    orderHash: { type : String, default : '', trim : true },
     tokenS: { type : String, default : '', trim : true },
     tokenB: { type : String,  trim : true },
     amountS: Number,
     amountB: Number,
-    timestamp: String,
+    timestamp: Number,
     ttl  : Number,
     salt  : String,
     lrcFee  : Number,
     buyNoMoreThanAmountB  : Boolean,
-    savingSharePercentage  : Number,
-    v  : String,
+    marginSplitPercentage  : Number,
+    v  : Number,
     s  : String,
     r  : String
 });
@@ -151,6 +153,20 @@ OrderSchema.statics = {
       .exec();
   }
 };
+
+var ipfsConvertSet = ['amountS', 'amountB', 'timestamp', 'ttl', 'lrcFee'];
+
+module.exports.toIpfsMsg = () => {
+    ipfsConvertSet.forEach(k => {
+        this[k] = "0x" + this[k].toString(16);
+    })
+}
+
+module.exports.fromIpfsMsg = () => {
+    ipfsConvertSet.forEach(k => {
+        this[k] = parseInt()
+})
+}
 
 mongoose.model('Order', OrderSchema);
 module.exports.OrderSchema = OrderSchema;

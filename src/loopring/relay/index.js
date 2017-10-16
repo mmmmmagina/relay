@@ -9,8 +9,8 @@ const program = require('commander');
 const fs = require('fs');
 const join = require('path').join;
 const mongoose = require("mongoose");
-const ethProxy = require('proxy/eth');
-const ipfsProxy = require('proxy/ipfs');
+const ethProxy = require('./proxy/eth');
+const ipfsProxy = require('./proxy/ipfs');
 
 
 var configs = {
