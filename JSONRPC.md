@@ -465,6 +465,7 @@ params: {
   - `txHash` - The transaction hash of the match.
   - `fillAmountS` - Amount of sell.
   - `fillAmountB` - Amount of buy.
+  - `isBuy` - is buy or sell.
   - `ts` - The timestamp of matching time.
   - `relatedOrderHash` - The order hash.
 2. `pageIndex`
@@ -486,6 +487,7 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getFills","params":{see 
         "txHash" : "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238",
         "fillAmountS" : 20,
         "fillAmountB" : 30.21,
+        "isBuy" : true,
         "ts" : 1506014710000
       }
     ],
