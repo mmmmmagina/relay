@@ -75,7 +75,7 @@ params: {
   "salt" : 3848348,
   "lrcFee" : 20,
   "buyNoMoreThanAmountB" : true,
-  "savingSharePercentage" : 50, // 0~100
+  "marginSplitPercentage" : 50, // 0~100
   "v" : 112,
   "r" : "239dskjfsn23ck34323434md93jchek3",
   "s" : "dsfsdf234ccvcbdsfsdf23438cjdkldy",
@@ -188,7 +188,7 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
   "jsonrpc": "2.0",
   "result": {
     "orginalOrder" : {
-      "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
+      "owner" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
       "tokenS" : "Eth",
       "tokenB" : "Lrc",
       "amountS" : "0x2acd38d8ef93",
@@ -257,7 +257,8 @@ params: {
 `PageResult of Order` - Order list with page info
 
 1. `data` `LoopringOrder` - The original order info when submitting.(refer to [LoopringProtocol](https://github.com/Loopring/protocol/blob/master/contracts/LoopringProtocol.sol))
-  - `address` - Order submit address
+  - `owner` - Order submit address.
+  - `orderHash` - Order hash.
   - `tokenS` - Token to sell.
   - `tokenB` - Token to buy.
   - `amountS` - Maximum hex string amount of tokenS to sell.
@@ -289,7 +290,8 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
   "result": {
     "data" : [
       "orginalOrder" : {
-        "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
+        "owner" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
+        "orderHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c",
         "tokenS" : "Eth",
         "tokenB" : "Lrc",
         "amountS" : "0x2acd38d8ef93",
@@ -316,13 +318,19 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
             "ts" : 1506014710,
             "amountS" : "0x2acd38d8ef93",
             "amountB" : "0x2acd38d8ef93",
-            "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
+            "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c",
+            "ringHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c",
+            "lrcFee" : 20,
+            "marginSplitPercentage" : 50
           },
           {
             "ts" : "1506014710323",
             "amountS" : "0x2acd38d8ef93",
             "amountB" : "0x2acd38d8ef93",
             "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
+            "ringHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c",
+            "lrcFee" : 20,
+            "marginSplitPercentage" : 50
           }
         ]
       },
