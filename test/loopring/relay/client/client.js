@@ -33,17 +33,18 @@ var client = jayson.client.http({
 // });
 
 var submitOrderRequest = {
-    "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
-    "tokenS" : "Eth",
-    "tokenB" : "Lrc",
-    "amountS" : 100.3,
-    "amountB" : 3838435,
+    "protocol" : "0xfd9ecf92e3684451c2502cf9cdc45962a4febffa",
+    "owner" : "0xfd9ecf92e3684451c2502cf9cdc45962a4febffa",
+    "tokenS" : "0x39948535983958",
+    "tokenB" : "0x2348348199123",
+    "amountS" : "0x23423",
+    "amountB" : "0x2934ab9",
     "timestamp" : 1406014710,
     "ttl": 1200,
-    "salt" : 3848348,
+    "salt" : '0x2349',
     "lrcFee" : 20,
     "buyNoMoreThanAmountB" : true,
-    "savingSharePercentage" : 50, // 0~100
+    "marginSplitPercentage" : 50, // 0~100
     "v" : 112,
     "r" : "239dskjfsn23ck34323434md93jchek3",
     "s" : "dsfsdf234ccvcbdsfsdf23438cjdkldy"

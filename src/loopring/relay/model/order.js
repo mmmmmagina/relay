@@ -3,6 +3,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const BigNumber = require('bignumber.js');
 
 /**
  * Order Schema
@@ -10,12 +11,12 @@ const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema({
     protocol: { type : String, default : '', trim : true },
-    address: { type : String, default : '', trim : true },
+    owner: { type : String, default : '', trim : true },
     orderHash: { type : String, default : '', trim : true },
     tokenS: { type : String, default : '', trim : true },
     tokenB: { type : String,  trim : true },
-    amountS: Number,
-    amountB: Number,
+    amountS: String,
+    amountB: String,
     timestamp: Number,
     ttl  : Number,
     salt  : String,
@@ -55,21 +56,6 @@ OrderSchema.pre('remove', function (next) {
  */
 
 OrderSchema.methods = {
-
-  /**
-   * Save article and upload image
-   *
-   * @param {Object} images
-   * @api private
-   */
-
-  uploadAndSave: function (image) {
-      console.log("start xxxxx");
-    const err = this.validateSync();
-    if (err && err.toString()) throw new Error(err.toString());
-    console.log("start xxxxx2");
-    return this.save();
-  },
 
   /**
    * Add comment
@@ -154,17 +140,29 @@ OrderSchema.statics = {
   }
 };
 
-var ipfsConvertSet = ['amountS', 'amountB', 'timestamp', 'ttl', 'lrcFee'];
+var ipfsConvertSet = ['timestamp', 'ttl', 'lrcFee'];
 
-module.exports.toIpfsMsg = () => {
+module.exports.toIpfsMsg = (order) => {
     ipfsConvertSet.forEach(k => {
-        this[k] = "0x" + this[k].toString(16);
+        if (k == 'lrcFee') {
+            var lrcFeeBig = new BigNumber(order[k]);
+            order[k] = "0x" + lrcFeeBig.mul(10e18).toString(16);
+            console.log("0x" + lrcFeeBig.mul(10e18).toString(16));
+            console.log(order[k]);
+        } else {
+            order[k] = "0x" + order[k].toString(16);
+        }
     })
 }
 
-module.exports.fromIpfsMsg = () => {
+module.exports.fromIpfsMsg = (order) => {
     ipfsConvertSet.forEach(k => {
-        this[k] = parseInt()
+        if (k == 'lrcFee') {
+            var lrcFeeBig = new BigNumber(order[k]);
+            order[k] = lrcFeeBig.div(10e18).toNumber();
+        } else {
+            order[k] = parseInt(order[k]);
+        }
 })
 }
 
