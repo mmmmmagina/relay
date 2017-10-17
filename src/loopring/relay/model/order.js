@@ -51,6 +51,12 @@ OrderSchema.pre('remove', function (next) {
   next();
 });
 
+//TODO
+OrderSchema.pre('cancel', function (next) {
+    // verify the input data
+    next();
+});
+
 /**
  * Methods
  */
@@ -64,6 +70,11 @@ OrderSchema.methods = {
    * @param {Object} comment
    * @api private
    */
+
+  //TODO query by orderHash
+  update: function (state, amountS, amountB) {
+
+  }
 
   // addComment: function (user, comment) {
   //   this.comments.push({

@@ -56,9 +56,9 @@ mongoose.connect(configs[mode].mongo, {
 });
 
 //==========================> start eth proxy
-ethProxy.start(configs[mode].eth);
+ethProxy.connect(configs[mode].eth);
 //==========================> start ipfs proxy
-ipfsProxy.start(configs[mode].ipfs);
+ipfsProxy.connect(configs[mode].ipfs);
 
 console.log("   _                                                         _\n" +
     " | |    ___   ___   ___   ___   ___   ___   ___  _ __  _ __(_)_ __   __ _\n" +
