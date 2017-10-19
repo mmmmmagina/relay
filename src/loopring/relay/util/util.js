@@ -7,7 +7,12 @@ var Util = function () {
 };
 
 Util.prototype.generateOrderHash = function (input) {
-    input.orderHash = solSHA3([
+    var buffer = this.generateHashBuffer(input);
+    input.orderHash = ethUtil.bufferToHex(buffer);
+};
+
+Util.prototype.generateHashBuffer = function (input) {
+    return solSHA3([
         input.protocol,
         input.owner,
         input.tokenS,
@@ -38,8 +43,8 @@ function solSHA3(args) {
             throw "Unable to guess arg type: " + arg;
         }
     });
-    const hash = ABI.soliditySHA3(argTypes, args);
-    return ethUtil.bufferToHex(hash);
+
+    return ABI.soliditySHA3(argTypes, args);
 }
 
 module.exports = new Util();

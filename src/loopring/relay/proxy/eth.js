@@ -4,11 +4,18 @@ var Web3 = require('web3');
 
 var EthProxy = function () {
     this.web3 = null;
+    this.contract = null;
 };
 
 EthProxy.prototype.connect = function (connection) {
     if (!this.web3) {
         this.web3 = new Web3(new Web3.providers.HttpProvider(connection));
+    }
+    //TODO abi is a string to config later.
+    var abi = '';
+    if (!this.contract) {
+        this.contract = this.web3.eth.contract(JSON.parse(abi));
+        this.sigContractInstance =  this.contract.at('0xksdfjsdfjk')
     }
 };
 
@@ -20,6 +27,7 @@ EthProxy.prototype.exec = function(method, args, callback) {
     if (args instanceof Array && args.length === 1) {
         args = args[0];
     }
+
     this.web3.eth[preRemoved](args, function (err, rst) {
        if (err) {
            console.log("err is " + err);

@@ -108,17 +108,28 @@ Cancel an order.
 ##### Parameters
 
 `JSON Object` - include order hash and signature params
-  - `orderHash` - The order hash.
-  - `v` - ECDSA signature parameter v.
-  - `r` - ECDSA signature parameter r.
-  - `s` - ECDSA signature parameter s.
+  - `rawTx` - The raw transaction to cancel order.
+  - `originalOrder` - The original order while submitted.
 
 ```js
 params: {
-  "orderHash" : "0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad",
-  "v" : 112,
-  "r" : "239dskjfsn23ck34323434md93jchek3",
-  "s" : "dsfsdf234ccvcbdsfsdf23438cjdkldy",
+  "rawTx" : "0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad",
+  "originalOrder" : {
+    "owner" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
+    "tokenS" : "Eth",
+    "tokenB" : "Lrc",
+    "amountS" : "0x2acd38d8ef93",
+    "amountB" : "0x2acd38d8ef93",
+    "timestamp" :1506014710,
+    "ttl": 1200,
+    "salt" : 3848348,
+    "lrcFee" : 20,
+    "buyNoMoreThanAmountB" : true,
+    "savingSharePercentage" : 50, // 0~100
+    "v" : 112,
+    "r" : "239dskjfsn23ck34323434md93jchek3",
+    "s" : "dsfsdf234ccvcbdsfsdf23438cjdkldy"
+  }
 }
 ```
 
@@ -136,97 +147,6 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_cancelOrder","params":{
   "id":64,
   "jsonrpc": "2.0",
   "result": "SUBMIT_SUCCESS"
-}
-```
-
-***
-
-#### loopring_getOrderByHash
-
-Get order details info by order hash.
-
-##### Parameters
-
-`String` - The order hash
-
-```js
-params: ["0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad"]
-```
-
-##### Returns
-
-1. `JSON Object` - The original order info when submitting.(refer to [LoopringProtocol](https://github.com/Loopring/protocol/blob/master/contracts/LoopringProtocol.sol))
-  - `address` - Order submit address
-  - `tokenS` - Token to sell.
-  - `tokenB` - Token to buy.
-  - `amountS` - Maximum hex string amount of tokenS to sell.
-  - `amountB` - Minimum hex string amount of tokenB to buy if all amountS sold.
-  - `timestamp` - Indicating when this order is created.
-  - `ttl` - How long, in seconds, will this order live.
-  - `rand` - A random number to make this order's hash unique.
-  - `lrcFee` - Max amount of LRC to pay for miner. The real amount to pay is proportional to fill amount.
-  - `buyNoMoreThanAmountB` - If true, this order does not accept buying more than `amountB`.
-  - `savingSharePercentage` - The percentage of savings paid to miner.
-  - `v` - ECDSA signature parameter v.
-  - `r` - ECDSA signature parameter r.
-  - `s` - ECDSA signature parameter s.
-  - `ts` - The submit TimeStamp.
-
-2. `status` `STRING` - Order status. refer to `Order Status Set` (include Pending, PartiallyExecuted, FullyExecuted, Cancelled)
-3. `totalDealedAmountS` - The total amount of TokenS that have been selled. 
-4. `totalDealedAmountB` - The total amount of TokenB that have been buyed.
-5. `matchList` -  The match records related to this order.
-
-##### Example
-```js
-// Request
-curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params":{see above},"id":64}'
-
-// Result
-{
-  "id":64,
-  "jsonrpc": "2.0",
-  "result": {
-    "orginalOrder" : {
-      "owner" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
-      "tokenS" : "Eth",
-      "tokenB" : "Lrc",
-      "amountS" : "0x2acd38d8ef93",
-      "amountB" : "0x2acd38d8ef93",
-      "timestamp" :1506014710,
-      "ttl": 1200,
-      "salt" : 3848348,
-      "lrcFee" : 20,
-      "buyNoMoreThanAmountB" : true,
-      "savingSharePercentage" : 50, // 0~100
-      "v" : 112,
-      "r" : "239dskjfsn23ck34323434md93jchek3",
-      "s" : "dsfsdf234ccvcbdsfsdf23438cjdkldy",
-      "ts" : 1506014710
-    },
-    "status" : "PartiallyExecuted",
-    "totalDealedAmountS" : 0x2acd38d8ef93,
-    "totalDealedAmountB" : 0x2acd38d8ef93,
-    "matchList" : {
-      "total" : 301,
-      "pageIndex" : 2,
-      "pageSize" : 20
-      "data" : [
-        {
-          "ts" : 1506014710,
-          "amountS" : "0x2acd38d8ef93",
-          "amountB" : "0x2acd38d8ef93",
-          "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
-        },
-        {
-          "ts" : "1506014710323",
-          "amountS" : "0x2acd38d8ef93",
-          "amountB" : "0x2acd38d8ef93",
-          "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
-        }
-      ]
-    }
-  }
 }
 ```
 

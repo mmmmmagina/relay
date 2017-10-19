@@ -13,11 +13,11 @@ var IpfsProxy = function () {
 };
 
 IpfsProxy.prototype.topics = {
-    orderSubmittedTopic : "LOOPRING_ORDER_SUBMITTED_0XJD7JDX6KS",
-    orderCancelledTopic : "LOOPRING_ORDER_CANCELED_98XJDK7J2JJ4"
+    orderSubmittedTopic: "LOOPRING_ORDER_SUBMITTED_0XJD7JDX6KS",
+    orderCancelledTopic: "LOOPRING_ORDER_CANCELLED_98XJDK7J2JJ4"
 };
 
-IpfsProxy.prototype.connect = function(connection) {
+IpfsProxy.prototype.connect = function (connection) {
     if (!this.agent) {
         this.agent = IpfsAPI(connection);
     }
@@ -26,23 +26,22 @@ IpfsProxy.prototype.connect = function(connection) {
     this.agent.pubsub.subscribe(this.topics.orderCancelledTopic, this.orderCanceled);
 };
 
-IpfsProxy.prototype.publish = function(topic, order, callback) {
-    this.agent.pubsub.publish(topic, Buffer.from(JSON.stringify(order)), function(err) {
+IpfsProxy.prototype.publish = function (topic, order, callback) {
+    this.agent.pubsub.publish(topic, Buffer.from(JSON.stringify(order)), function (err) {
         callback(err);
     });
 };
 
-IpfsProxy.prototype.orderCanceled = function(msg) {
+IpfsProxy.prototype.orderCanceled = function (msg) {
     var formattedOrder = JSON.parse(msg.data.toString());
 
-    Validator.isValidOrder(formattedOrder, function (rst) {
-       if (!rst) {
-           var toCancelOrder = new Order(formattedOrder);
-           toCancelOrder.cancel(Const.OrderStatus.CANCELLED);
-       } else {
-           console.log("order validate failed, reason : " + rst);
-       }
-    });
+    var validateRst = Validator.isValidSignature(formattedOrder);
+    if (validateRst) {
+        var toCancelOrder = new Order(formattedOrder);
+        toCancelOrder.cancel(Const.OrderStatus.CANCELLED);
+    } else {
+        console.log("order validate failed");
+    }
 };
 
 module.exports = new IpfsProxy();
