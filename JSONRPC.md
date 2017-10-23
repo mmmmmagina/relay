@@ -48,7 +48,7 @@ Submit an order. The order is submitted to relay as a JSON object, this JSON wil
 ##### Parameters
 
 `JSON Object` - The order object(refer to [LoopringProtocol](https://github.com/Loopring/protocol/blob/master/contracts/LoopringProtocol.sol))
-  - `address` - Order submit address
+  - `owner` - Order submit address
   - `tokenS` - Token to sell.
   - `tokenB` - Token to buy.
   - `amountS` - Maximum hex string amount of tokenS to sell.
@@ -65,7 +65,7 @@ Submit an order. The order is submitted to relay as a JSON object, this JSON wil
 
 ```js
 params: {
-  "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
+  "owner" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
   "tokenS" : "Eth",
   "tokenB" : "Lrc",
   "amountS" : "0x28",
@@ -158,14 +158,14 @@ Get loopring order list.
 
 ##### Parameters
 
-`address` - The address, if is null, will query all orders.
+`owner` - The address, if is null, will query all orders.
 `status` - selected by status.
 `pageIndex` - The page want to query, default is 1.
 `pageSize` - The size per page, default is 50.
 
 ```js
 params: {
-  "address" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
+  "owner" : "0x847983c3a34afa192cfee860698584c030f4c9db1",
   "status" : "Canceled",
   "pageIndex" : 2,
   "pageSize" : 40
@@ -192,7 +192,7 @@ params: {
   - `v` - ECDSA signature parameter v.
   - `r` - ECDSA signature parameter r.
   - `s` - ECDSA signature parameter s.
-  - `ts` - The submit TimeStamp.
+  - `timestamp` - The submit TimeStamp.
 
 2. `total` - Total amount of orders.
 3. `pageIndex` - Index of page.
@@ -235,7 +235,7 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
         "pageSize" : 20
         "data" : [
           {
-            "ts" : 1506014710,
+            "timestamp" : 1506014710,
             "amountS" : "0x2acd38d8ef93",
             "amountB" : "0x2acd38d8ef93",
             "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c",
@@ -244,7 +244,7 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
             "marginSplitPercentage" : 50
           },
           {
-            "ts" : "1506014710323",
+            "timestamp" : "1506014710323",
             "amountS" : "0x2acd38d8ef93",
             "amountB" : "0x2acd38d8ef93",
             "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
@@ -339,7 +339,7 @@ params: {
 4. `vol`
 5. `buy`
 6. `sell`
-7. `ts` - Timestamp.
+7. `timestamp` - Timestamp.
 8. `change`
 
 ##### Example
@@ -358,11 +358,11 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_ticker","params":{see ab
     "vol" : 1038,
     "buy" : 122321,
     "sell" : 12388,
-    "ts" : 1506014710000,
+    "timestamp" : 1506014710000,
     "change" : -7.00
     "buy" : "0x2acd38d8ef93",
     "sell" : "0x2acd38d8ef93",
-    "ts" : 1506014710,
+    "timestamp" : 1506014710,
     "change" : -7.00
   }
 }
@@ -398,7 +398,7 @@ params: {
   - `fillAmountS` - Amount of sell.
   - `fillAmountB` - Amount of buy.
   - `isBuy` - is buy or sell.
-  - `ts` - The timestamp of matching time.
+  - `timestamp` - The timestamp of matching time.
   - `relatedOrderHash` - The order hash.
 2. `pageIndex`
 3. `pageSize`
@@ -420,7 +420,7 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getFills","params":{see 
         "fillAmountS" : "0x23498343248",
         "fillAmountB" : "0x23498343248",
         "isBuy" : true,
-        "ts" : 1506014710000
+        "timestamp" : 1506014710000
       }
     ],
     "pageIndex" : 1,
@@ -458,7 +458,7 @@ params: {
 `ARRAY of JSON OBJECT`
   - `fillAmountS` - Total amount of sell.
   - `fillAmountB` - Total amount of buy.
-  - `ts` - The timestamp of matching time.
+  - `timestamp` - The timestamp of matching time.
   - `open` - The opening price.
   - `close` - The closing price.
   - `high` - The highest price in interval.
@@ -479,7 +479,7 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_getCandleTicks","params"
       {
         "fillAmountS" : "0x23498343248",
         "fillAmountB" : "0x23498343248",
-        "ts" : 1506014710
+        "timestamp" : 1506014710
         "open" : "0x23498343248",
         "close" : "0x23498343248",
         "high" : "0x23498343248",
