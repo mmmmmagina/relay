@@ -21,7 +21,6 @@ IpfsProxy.prototype.connect = function (connection) {
     if (!this.agent) {
         this.agent = IpfsAPI(connection);
     }
-
     // subscribe order cancel topic
     this.agent.pubsub.subscribe(this.topics.orderCancelledTopic, this.orderCanceled);
 };
@@ -30,7 +29,6 @@ IpfsProxy.prototype.publish = function (topic, order, callback) {
     this.agent.pubsub.publish(topic, Buffer.from(JSON.stringify(order)), function (err) {
         callback(err);
     });
-};
 
 IpfsProxy.prototype.orderCanceled = function (msg) {
     var formattedOrder = JSON.parse(msg.data.toString());

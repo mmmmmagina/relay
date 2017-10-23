@@ -151,31 +151,5 @@ OrderSchema.statics = {
   }
 };
 
-var ipfsConvertSet = ['timestamp', 'ttl', 'lrcFee'];
-
-module.exports.toIpfsMsg = (order) => {
-    ipfsConvertSet.forEach(k => {
-        if (k == 'lrcFee') {
-            var lrcFeeBig = new BigNumber(order[k]);
-            order[k] = "0x" + lrcFeeBig.mul(10e18).toString(16);
-            console.log("0x" + lrcFeeBig.mul(10e18).toString(16));
-            console.log(order[k]);
-        } else {
-            order[k] = "0x" + order[k].toString(16);
-        }
-    })
-}
-
-module.exports.fromIpfsMsg = (order) => {
-    ipfsConvertSet.forEach(k => {
-        if (k == 'lrcFee') {
-            var lrcFeeBig = new BigNumber(order[k]);
-            order[k] = lrcFeeBig.div(10e18).toNumber();
-        } else {
-            order[k] = parseInt(order[k]);
-        }
-})
-}
-
 mongoose.model('Order', OrderSchema);
 module.exports.OrderSchema = OrderSchema;
