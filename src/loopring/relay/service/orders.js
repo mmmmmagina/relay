@@ -4,10 +4,9 @@ var IpfsProxy = require('../proxy/ipfs');
 var BigNumber = require('bignumber.js');
 var ethProxy = require('../proxy/eth');
 var Util = require('../util/util');
-var mongoose = require('mongoose');
-var OrderSchema = require('../model/order').OrderSchema;
-var Order = mongoose.model('Order', OrderSchema);
+var Order = require('../model/order');
 var Validator = require('../util/validator');
+var consts = require('../constants/const');
 
 
 var Orders = function () {
@@ -15,11 +14,11 @@ var Orders = function () {
 
 Orders.prototype.needFormatFields = ['timestamp', 'ttl', 'lrcFee'];
 
-Orders.prototype.loopring_submitOrder = function (input, callback) {
+Orders.prototype.submitOrder = function (input, callback) {
 
     var isValidSign = Validator.isValidSignature(input);
     if (!isValidSign) {
-        callback("not valid order submitted");
+        callback({code: -6666661, message: 'not valid order submitted!'});
         return;
     }
 
@@ -33,26 +32,26 @@ Orders.prototype.loopring_submitOrder = function (input, callback) {
                     console.log(err);
                     callback(err);
                 } else {
-                    callback("SUBMIT_SUCCESS");
+                    callback(null, "SUBMIT_SUCCESS");
                 }
             });
         }
     });
 };
 
-Orders.prototype.loopring_cancelOrder = function (input, callback) {
+Orders.prototype.cancelOrder = function (input, callback) {
     console.log('input params is ========> ');
     console.log(input);
 
     var isValidSign = Validator.isValidSignature(input);
     if (!isValidSign) {
-        callback("not valid order submitted");
+        callback({code: -6666661, message: 'not valid order submitted!'});
         return;
     }
 
 
     ethProxy.exec("");
-    // 1. send eth tx to cancel
+    // 1. send eth tx to cancel, if order not matched, just broadcast order cancelled msg.
     // 2. if 1 success , update order status to Cancelled in db
     // 3. broadcast order cancelled
 
@@ -62,6 +61,12 @@ Orders.prototype.loopring_cancelOrder = function (input, callback) {
     });
 };
 
+Orders.prototype.getFills = function () {
+
+};
+
+Orders.prototype.cancelAllOrders = function () {
+};
 
 Orders.prototype.formatToHex = function (order) {
     var hexFormattedOrder = JSON.parse(JSON.stringify(order));

@@ -4,6 +4,10 @@ var jayson = require('jayson');
 var orders = require('../service/orders');
 var markets = require('../service/markets');
 var ring = require('../service/rings');
+var connect = require('connect');
+var jsonParser = require('body-parser').json;
+var cors = require('cors');
+
 
 var methods = {
     test: function(args, callback) {
@@ -11,19 +15,19 @@ var methods = {
     },
     loopring_submitOrder : function (args, callback) {
         console.log(args);
-        orders.loopring_submitOrder(args, function (rst) {
-            callback(null, rst);
+        orders.submitOrder(args, function (err, rst) {
+            callback(err, rst);
         })
     },
     loopring_cancelOrder : function (args, callback) {
         console.log(args);
-        orders.loopring_cancelOrder(args, function (rst) {
+        orders.cancelOrder(args, function (rst) {
             callback(null, rst);
         })
     },
     loopring_getOrders : function (args, callback) {
         console.log(args);
-        orders.loopring_getOrders(args, function (rst) {
+        orders.getOrders(args, function (rst) {
             callback(null, rst);
         })
     },loopring_getDepth : function (args, callback) {
@@ -38,7 +42,7 @@ var methods = {
         })
     },loopring_getFills : function (args, callback) {
         console.log(args);
-        orders.loopring_getFills(args, function (rst) {
+        orders.getFills(args, function (rst) {
             callback(null, rst);
         })
     },
@@ -59,12 +63,13 @@ var methods = {
 
 module.exports.start = function(connection) {
 
-    var ethJsonRpcClient = jayson.client.https(connection);
+    var ethJsonRpcClient = jayson.client.http(connection);
+    var app = connect();
 
     var server = jayson.server(methods, {
         router: function(method, params) {
             // regular by-name routing first
-            // console.log(method);
+            console.log(method);
             // console.log(this._methods);
             if(method.startsWith('eth_')) {
                 return new jayson.Method(function(args, done) {
@@ -85,5 +90,9 @@ module.exports.start = function(connection) {
     });
 
 
-    server.http().listen(3000);
+    app.use(cors({methods: ['POST', 'GET']}));
+    app.use(jsonParser());
+    app.use(server.middleware());
+
+    app.listen(3000);
 };

@@ -2,6 +2,8 @@
 
 var ABI = require('ethereumjs-abi');
 var ethUtil = require('ethereumjs-util');
+var BigNumber = require('bignumber.js');
+var BN = require('bn.js');
 
 var Util = function () {
 };
@@ -17,12 +19,12 @@ Util.prototype.generateHashBuffer = function (input) {
         input.owner,
         input.tokenS,
         input.tokenB,
-        input.amountS,
-        input.amountB,
-        input.timestamp,
-        input.ttl,
-        input.salt,
-        input.lrcFee,
+        new BigNumber(input.amountS),
+        new BigNumber(input.amountB),
+        new BigNumber(input.timestamp),
+        new BigNumber(input.ttl),
+        new BigNumber(input.salt),
+        new BigNumber(input.lrcFee),
         input.buyNoMoreThanAmountB,
         input.marginSplitPercentage
     ]);
@@ -30,8 +32,13 @@ Util.prototype.generateHashBuffer = function (input) {
 
 function solSHA3(args) {
     var argTypes = [];
-    args.forEach(function (arg) {
-        if (typeof arg === "number") {
+    console.log(args);
+    args.forEach(function (arg, i) {
+
+        if (arg instanceof BigNumber) {
+            argTypes.push('uint256');
+            args[i] = new BN(arg.toString(10), 10);
+        } else if (typeof arg === "number") {
             argTypes.push('uint8');
         } else if (ethUtil.isValidAddress(arg)) {
             argTypes.push('address');
@@ -43,6 +50,7 @@ function solSHA3(args) {
             throw "Unable to guess arg type: " + arg;
         }
     });
+    console.log(argTypes);
 
     return ABI.soliditySHA3(argTypes, args);
 }

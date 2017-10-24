@@ -19,7 +19,7 @@ Validator.prototype.isValidSignature = function(order) {
         var recoveredAddress = ethUtil.bufferToHex(ethUtil.pubToAddress(pubKey));
         console.log(recoveredAddress);
         console.log(order.owner);
-        return recoveredAddress === order.owner;
+        return recoveredAddress.toLowerCase() === order.owner.toLowerCase();
     } catch (err) {
         return false;
     }

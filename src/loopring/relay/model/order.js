@@ -151,5 +151,4 @@ OrderSchema.statics = {
   }
 };
 
-mongoose.model('Order', OrderSchema);
-module.exports.OrderSchema = OrderSchema;
+module.exports = mongoose.model('Order', OrderSchema);

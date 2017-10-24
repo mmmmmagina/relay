@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var IpfsAPI = require('ipfs-api');
 var mongoose = require('mongoose');
@@ -29,6 +29,7 @@ IpfsProxy.prototype.publish = function (topic, order, callback) {
     this.agent.pubsub.publish(topic, Buffer.from(JSON.stringify(order)), function (err) {
         callback(err);
     });
+};
 
 IpfsProxy.prototype.orderCanceled = function (msg) {
     var formattedOrder = JSON.parse(msg.data.toString());
