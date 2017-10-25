@@ -66,6 +66,12 @@ Orders.prototype.getFills = function () {
 };
 
 Orders.prototype.cancelAllOrders = function () {
+
+};
+
+Orders.prototype.getOrders = function (query) {
+    var {owner, status, pageIndex, pageSize} = query;
+    
 };
 
 Orders.prototype.formatToHex = function (order) {

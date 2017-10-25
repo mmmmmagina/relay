@@ -235,7 +235,6 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
         "pageSize" : 20
         "data" : [
           {
-<<<<<<< Updated upstream
             "timestamp" : 1506014710,
             "amountS" : "0x2acd38d8ef93",
             "amountB" : "0x2acd38d8ef93",
@@ -246,18 +245,9 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"loopring_getOrderByHash","params
           },
           {
             "timestamp" : "1506014710323",
-=======
-            "ts" : 1506014710,
             "amountS" : "0x2acd38d8ef93",
             "amountB" : "0x2acd38d8ef93",
-            "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
-          },
-          {
-            "ts" : "1506014710323",
->>>>>>> Stashed changes
-            "amountS" : "0x2acd38d8ef93",
-            "amountB" : "0x2acd38d8ef93",
-            "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c"
+            "txHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c",
             "ringHash" : "0x1eb8d538bb9727028912f57c54776d90c1927e3b49f34a2e53e9271949ec044c",
             "lrcFee" : 20,
             "marginSplitPercentage" : 50
@@ -366,20 +356,10 @@ curl -X GET --data '{"jsonrpc":"2.0","method":"loopring_ticker","params":{see ab
     "low" : "0x2acd38d8ef93",
     "last" : 28002.2,
     "vol" : 1038,
-<<<<<<< Updated upstream
-    "buy" : 122321,
-    "sell" : 12388,
-    "timestamp" : 1506014710000,
-    "change" : -7.00
     "buy" : "0x2acd38d8ef93",
     "sell" : "0x2acd38d8ef93",
     "timestamp" : 1506014710,
     "change" : -7.00
-=======
-    "buy" : "0x2acd38d8ef93",
-    "sell" : "0x2acd38d8ef93",
-    "ts" : 1506014710000
->>>>>>> Stashed changes
   }
 }
 ```
