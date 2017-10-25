@@ -3,10 +3,7 @@
 var Util = require('./util');
 var ethUtil = require('ethereumjs-util');
 
-var Validator = function () {
-};
-
-Validator.prototype.isValidSignature = function(order) {
+exports.isValidSignature = function(order) {
     var {v, r, s} = order;
     if (!v || !r || !s) {
         throw 'Cannot call isValidSignature on unsigned order';
@@ -24,6 +21,3 @@ Validator.prototype.isValidSignature = function(order) {
         return false;
     }
 };
-
-
-module.exports = new Validator();

@@ -12,7 +12,7 @@ module.exports.start = function(connection) {
             var id  = data.id;
             redisProxy.getDepth(s, b, function (data) {
                 data.id = id;
-                client.emit(consts.WebsocketMsgType.RESPONAE_DEPTH, data);
+                client.emit(consts.WebsocketMsgType.RESPONSE_DEPTH, data);
             });
         });
 
@@ -32,7 +32,7 @@ module.exports.start = function(connection) {
     io.listen(connection);
 
     setInterval(function(){
-        io.sockets.emit(consts.WebsocketMsgType.RESPONAE_DEPTH, redisProxy.getDepth());
+        io.sockets.emit(consts.WebsocketMsgType.RESPONSE_DEPTH, redisProxy.getDepth());
     }, 5000);
 
 };

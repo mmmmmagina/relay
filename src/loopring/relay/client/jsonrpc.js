@@ -27,8 +27,8 @@ var methods = {
     },
     loopring_getOrders : function (args, callback) {
         console.log(args);
-        orders.getOrders(args, function (rst) {
-            callback(null, rst);
+        orders.getOrders(args, function (err, rst) {
+            callback(err, rst);
         })
     },loopring_getDepth : function (args, callback) {
         console.log(args);

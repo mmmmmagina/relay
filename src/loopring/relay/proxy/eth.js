@@ -28,13 +28,11 @@ EthProxy.prototype.orderFilled = function () {
 EthProxy.prototype.exec = function(method, args, callback) {
     console.log('method is' + method);
     console.log('args is' + args);
-    var preRemoved = method.substr("eth_".length);
-    console.log("preRemoved : " + preRemoved)
     if (args instanceof Array && args.length === 1) {
         args = args[0];
     }
 
-    this.web3.eth[preRemoved](args, function (err, rst) {
+    this.web3.eth[method](args, function (err, rst) {
        if (err) {
            console.log("err is " + err);
            return "err invoke " + method;

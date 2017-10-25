@@ -5,28 +5,25 @@ var BigNumber = require('bignumber.js');
 var ethProxy = require('../proxy/eth');
 var Util = require('../util/util');
 var Order = require('../model/order');
-var Validator = require('../util/validator');
-var consts = require('../constants/const');
+var validator = require('../util/validator');
+var OrderStatus = require('../constants/const').OrderStatus;
 
+var needFormatFields = ['timestamp', 'ttl', 'lrcFee'];
 
-var Orders = function () {
-};
+exports.submitOrder = function (input, callback) {
 
-Orders.prototype.needFormatFields = ['timestamp', 'ttl', 'lrcFee'];
-
-Orders.prototype.submitOrder = function (input, callback) {
-
-    var isValidSign = Validator.isValidSignature(input);
+    var isValidSign = validator.isValidSignature(input);
     if (!isValidSign) {
         callback({code: -6666661, message: 'not valid order submitted!'});
         return;
     }
 
     Util.generateOrderHash(input);
-    var hexFormatOrder = this.formatFromHex(input);
+    var hexFormatOrder = formatFromHex(input);
     IpfsProxy.publish(IpfsProxy.topics.orderSubmittedTopic, hexFormatOrder, function (err) {
         if (!err) {
             var order = new Order(input);
+            order.status = OrderStatus.PENDING;
             order.save(function (err) {
                 if (err) {
                     console.log(err);
@@ -39,44 +36,84 @@ Orders.prototype.submitOrder = function (input, callback) {
     });
 };
 
-Orders.prototype.cancelOrder = function (input, callback) {
+exports.cancelOrder = function (input, callback) {
     console.log('input params is ========> ');
     console.log(input);
 
-    var isValidSign = Validator.isValidSignature(input);
+    var isValidSign = validator.isValidSignature(input);
     if (!isValidSign) {
-        callback({code: -6666661, message: 'not valid order submitted!'});
+        callback({code: -6666661, message: 'not valid sign!'});
         return;
     }
 
 
-    ethProxy.exec("");
-    // 1. send eth tx to cancel, if order not matched, just broadcast order cancelled msg.
-    // 2. if 1 success , update order status to Cancelled in db
-    // 3. broadcast order cancelled
+    Util.generateOrderHash(input);
+    Order.findOne({orderHash : input.orderHash}, function (err, order) {
+        if (err) {
+            callback(err);
+        } else if (!order) {
+            callback({code : -6668881, message: "not found order by hash " + input.orderHash});
+        } else {
+            if (order.status === OrderStatus.CANCELLED || order.status === OrderStatus.EXPIRED || order.status === OrderStatus.FULLY_EXECUTED) {
+                callback({code : -6668882, message: "order has already been " + order.status.toLowerCase()});
+            } else if (order.status === OrderStatus.PENDING) {
+                Order.findOneAndUpdate({orderHash : input.orderHash}, {status : OrderStatus.CANCELLED}, null, function (err, order) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, "CANCEL_SUCCESS");
+                    }
+                });
+            } else if (order.status === OrderStatus.PARTIALLY_EXECUTED) {
+                ethProxy.exec('sendRawTransaction', input.rawTx, function (err, result) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, "SUBMIT_CANCEL_SUCCESS");
+                    }
+                });
+            } else {
+                callback({code : -6668883, message: "illegal status " + order.status});
+            }
+        }
 
+    });
 
-    ipfsProxy.publish(input, function (result) {
-        callback(result);
+};
+
+exports.getFills = function () {
+
+};
+
+exports.cancelAllOrders = function () {
+
+};
+
+exports.getOrders = function (query, callback) {
+    console.log("get orders input query " + query.toString());
+    var {owner, status, pageIndex, pageSize} = query;
+
+    var page = pageIndex > 0 ? pageIndex : 1;
+    var limit = pageSize > 0 && pageSize <= 50 ? pageSize : 20;
+    var criteria = {};
+    if (owner) {
+        criteria.owner = owner;
+    }
+    if (status) {
+        criteria.status = status;
+    }
+
+    console.log("query start");
+    Order.paginate(criteria, { page : page, limit : limit }, function (err, result) {
+        console.log("query result is " + err);
+        console.log("query result is " + result.toString);
+        callback(err, result);
     });
 };
 
-Orders.prototype.getFills = function () {
-
-};
-
-Orders.prototype.cancelAllOrders = function () {
-
-};
-
-Orders.prototype.getOrders = function (query) {
-    var {owner, status, pageIndex, pageSize} = query;
-    
-};
-
-Orders.prototype.formatToHex = function (order) {
+exports.formatToHex = function (order) {
     var hexFormattedOrder = JSON.parse(JSON.stringify(order));
-    this.needFormatFields.forEach(function (k) {
+    needFormatFields.forEach(function (k) {
 
         if (k === 'lrcFee') {
             var lrcFeeBig = new BigNumber(hexFormattedOrder[k]);
@@ -89,9 +126,9 @@ Orders.prototype.formatToHex = function (order) {
     return hexFormattedOrder;
 };
 
-Orders.prototype.formatFromHex = function (hexFormattedOrder) {
+exports.formatFromHex = function (hexFormattedOrder) {
     var unFormatOrder = JSON.parse(JSON.stringify(hexFormattedOrder));
-    this.needFormatFields.forEach(function (k) {
+    needFormatFields.forEach(function (k) {
 
         var bigNumber = new BigNumber(hexFormattedOrder[k]);
         if (k === 'lrcFee') {
@@ -103,5 +140,3 @@ Orders.prototype.formatFromHex = function (hexFormattedOrder) {
 
     return unFormatOrder;
 };
-
-module.exports = new Orders();

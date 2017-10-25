@@ -4,6 +4,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const BigNumber = require('bignumber.js');
+const mongoosePaginate = require('mongoose-paginate');
 
 /**
  * Order Schema
@@ -25,7 +26,8 @@ const OrderSchema = new Schema({
     marginSplitPercentage  : Number,
     v  : Number,
     s  : String,
-    r  : String
+    r  : String,
+    status : String
 });
 
 /**
@@ -151,4 +153,6 @@ OrderSchema.statics = {
   }
 };
 
+
+OrderSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Order', OrderSchema);

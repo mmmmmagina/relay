@@ -25,7 +25,7 @@ var configs = {
         ipfs: "",
         mongo : ""
     }
-}
+};
 
 var mode = "";
 

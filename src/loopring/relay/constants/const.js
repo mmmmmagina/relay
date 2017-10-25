@@ -10,7 +10,7 @@ module.exports.OrderStatus = {
 
 module.exports.WebsocketMsgType = {
     SUBSCRIBE_DEPTH : "subscribeDepth",
-    RESPONAE_DEPTH : "responseDepth",
+    RESPONSE_DEPTH : "responseDepth",
     SUBSCRIBE_CANDLE_TICKER : "subscribeCandleTicker",
     RESPONSE_CANDLE_TICKER : "responseCandleTicker"
 };
@@ -21,4 +21,9 @@ module.exports.LoopringProtocolEventType = {
     ORDER_CANCELLED : "OrderCancelled",
     CUTOFF_TIMESTAMP_CHANGED : "CutoffTimestampChanged"
 };
+
+module.exports.Errors = {
+    CANCEL_ORDER_CANCELLED : {code : 6000001, message : ""}
+};
+
 
