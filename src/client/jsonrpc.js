@@ -13,48 +13,48 @@ var methods = {
     test: function(args, callback) {
         callback(null, args[0] + args[1]);
     },
-    loopring_submitOrder : function (args, callback) {
+    submitOrder : function (args, callback) {
         console.log(args);
         orders.submitOrder(args, function (err, rst) {
             callback(err, rst);
         })
     },
-    loopring_cancelOrder : function (args, callback) {
+    cancelOrder : function (args, callback) {
         console.log(args);
         orders.cancelOrder(args, function (rst) {
             callback(null, rst);
         })
     },
-    loopring_getOrders : function (args, callback) {
+    getOrders : function (args, callback) {
         console.log(args);
         orders.getOrders(args, function (err, rst) {
             callback(err, rst);
         })
-    },loopring_getDepth : function (args, callback) {
+    },getDepth : function (args, callback) {
         console.log(args);
-        markets.loopring_getDepth(args, function (rst) {
+        markets.getDepth(args, function (rst) {
             callback(null, rst);
         })
-    },loopring_getTicker : function (args, callback) {
+    },getTicker : function (args, callback) {
         console.log(args);
-        markets.loopring_getTicker(args, function (rst) {
+        markets.getTicker(args, function (rst) {
             callback(null, rst);
         })
-    },loopring_getFills : function (args, callback) {
+    },getFills : function (args, callback) {
         console.log(args);
         orders.getFills(args, function (rst) {
             callback(null, rst);
         })
     },
-    loopring_getCandleTicks : function (args, callback) {
+    getCandleTicks : function (args, callback) {
         console.log(args);
-        markets.loopring_getCandleTicks(args, function (rst) {
+        markets.getCandleTicks(args, function (rst) {
             callback(null, rst);
         })
     },
-    loopring_getRingsMined : function (args, callback) {
+    getRingsMined : function (args, callback) {
         console.log(args);
-        ring.loopring_getRingsMined(args, function (rst) {
+        ring.getRingsMined(args, function (rst) {
             callback(null, rst);
         })
     }

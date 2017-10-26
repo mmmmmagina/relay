@@ -1,17 +1,25 @@
-'use strict'
+'use strict';
 
 
-require('dotenv').config();
-
-const jsonrpc = require('./client/jsonrpc');
-const WebsocketClient = require('./client/websocket');
+require('dotenv').config({path : "/usr/local/relay/.env"});
+const jsonrpc = require('./src/client/jsonrpc');
+const logger = require('winston');
+const WebsocketClient = require('./src/client/websocket');
 const program = require('commander');
 const fs = require('fs');
 const join = require('path').join;
 const mongoose = require("mongoose");
-const ethProxy = require('./proxy/eth');
-const ipfsProxy = require('./proxy/ipfs');
+const ethProxy = require('./src/proxy/eth');
+const ipfsProxy = require('./src/proxy/ipfs');
 
+if (!process.env.IS_PROD_MODE) {
+} else {
+    //load local env file .env
+    require('dotenv').config();
+}
+console.log("relay will running in " + (process.env.IS_PROD_MODE ? "PROD" : "LOCAL") + " mode");
+console.log("The process config is >>>>>>>>>>>>>");
+console.log(process.env);
 
 var configs = {
     test : {
@@ -27,38 +35,25 @@ var configs = {
     }
 };
 
-var mode = "";
-
-program.parse(process.argv);
-if (program.args.length == 1) {
-    mode = program.args[0];
-    if (mode !== "test" && mode !== "prod") {
-        console.log("wrong mode, please try test|prod");
-        return;
-    }
-} else {
-    console.log("wrong input length , please try : node index.js MODE (test|prod)");
-    return;
-}
 
 //==========================> start jsonrpc
-jsonrpc.start(configs[mode].eth);
+jsonrpc.start(configs['test'].eth);
 //TODO start websocket
 
 //==========================> init mongoose model and mongo collection
-const models = join(__dirname, 'model');
+const models = join(__dirname, 'src/model');
 fs.readdirSync(models)
     .filter(file => ~file.search(/^[^\.].*\.js$/))
     .forEach(file => require(join(models, file)));
 
-mongoose.connect(configs[mode].mongo, {
+mongoose.connect(configs['test'].mongo, {
     useMongoClient: true
 });
 
 //==========================> start eth proxy
-ethProxy.connect(configs[mode].eth);
+ethProxy.connect(configs['test'].eth);
 //==========================> start ipfs proxy
-ipfsProxy.connect(configs[mode].ipfs);
+ipfsProxy.connect(configs['test'].ipfs);
 
 console.log("   _                                                         _\n" +
     " | |    ___   ___   ___   ___   ___   ___   ___  _ __  _ __(_)_ __   __ _\n" +
