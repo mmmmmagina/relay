@@ -96,3 +96,39 @@ module.exports.start = function(connection) {
 
     app.listen(3000);
 };
+
+module.exports.init = function(port, ethAgentManager) {
+
+    var ethJsonRpcClient = jayson.client.http("https://infuranet.infura.io/RjAjeUYlo9jXI6J4xgyE");
+    var app = connect();
+
+    var server = jayson.server(methods, {
+        router: function(method, params) {
+            // regular by-name routing first
+            console.log(method);
+            // console.log(this._methods);
+            if(method.startsWith('eth_')) {
+                return new jayson.Method(function(args, done) {
+                    ethJsonRpcClient.request(method, args, function (err, res) {
+                        // console.log("client res is");
+                        // console.log(res);
+                        if (err) throw err;
+                        done(null, res.result);
+                    })
+                    // web3 version
+                    // ethProxy.exec(method, args, function (rst) {
+                    //     done(null, rst);
+                    // });
+                });
+            }
+            if(this._methods[method]) return this._methods[method];
+        }
+    });
+
+
+    app.use(cors({methods: ['POST', 'GET']}));
+    app.use(jsonParser());
+    app.use(server.middleware());
+
+    app.listen(port);
+};

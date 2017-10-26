@@ -4,7 +4,6 @@
 require('dotenv').config({path : "/usr/local/relay/.env"});
 const jsonrpc = require('./src/client/jsonrpc');
 const logger = require('./src/log/logger').defaultLogger;
-const orderLogger = require('./src/log/logger').orderLogger;
 const WebsocketClient = require('./src/client/websocket');
 const program = require('commander');
 const fs = require('fs');
@@ -12,49 +11,37 @@ const join = require('path').join;
 const mongoose = require("mongoose");
 const ethProxy = require('./src/proxy/eth');
 const ipfsProxy = require('./src/proxy/ipfs');
+const Promise = require('bluebird');
+const initHelper = require('./src/util/initHelper');
 
-if (!process.env.IS_PROD_MODE) {
-    //load local env file .env
-    require('dotenv').config();
-}
-logger.info("relay will running in %s mode", process.env.IS_PROD_MODE ? "PROD" : "LOCAL");
-logger.info("The process config is >>>>>>>>>>>>>");
-logger.info(process.env);
-orderLogger.error("x............... %d", 1000);
+Promise.promisifyAll(initHelper);
 
-var configs = {
-    test : {
-        eth: "https://infuranet.infura.io/RjAjeUYlo9jXI6J4xgyE",
-        ipfs: ['localhost', '5001', {protocol: 'http'}],
-        mongo : "mongodb://localhost/loopring",
-        websocket : 3008
-    },
-    prod : {
-        eth: "",
-        ipfs: "",
-        mongo : ""
-    }
-};
+// the order is bottom up
+start()
+    .then(initHelper.loadEnvAsync)
+    .then(initHelper.initMongooseAsync(process.env.MONGO_CONN, "../src/model"))
+    .then(initHelper.initJsonRpc)
+    .then(function (resolve) {
+        logger.info("==========> finish init project");
+        resolve("finish");
+    })
+    .catch(function (err) {
+       logger.error("some error occur when init project...");
+       logger.error(err);
+    });
 
 
 //==========================> start jsonrpc
-jsonrpc.start(configs['test'].eth);
-//TODO start websocket
-
-//==========================> init mongoose model and mongo collection
-const models = join(__dirname, 'src/model');
-fs.readdirSync(models)
-    .filter(file => ~file.search(/^[^\.].*\.js$/))
-    .forEach(file => require(join(models, file)));
-
-mongoose.connect(configs['test'].mongo, {
-    useMongoClient: true
-});
-
-//==========================> start eth proxy
-ethProxy.connect(configs['test'].eth);
-//==========================> start ipfs proxy
-ipfsProxy.connect(configs['test'].ipfs);
+// jsonrpc.start(configs['test'].eth);
+// //TODO start websocket
+//
+// //==========================> init mongoose model and mongo collection
+//
+//
+// //==========================> start eth proxy
+// ethProxy.connect(configs['test'].eth);
+// //==========================> start ipfs proxy
+// ipfsProxy.connect(configs['test'].ipfs);
 
 console.log("   _                                                         _\n" +
     " | |    ___   ___   ___   ___   ___   ___   ___  _ __  _ __(_)_ __   __ _\n" +
@@ -62,3 +49,11 @@ console.log("   _                                                         _\n" +
     " | |__| (_) | (_) | (_) | (_) | (_) | (_) | (_) | |_) | |  | | | | | (_| |\n" +
     " |_____\\___/ \\___/ \\___/ \\___/ \\___/ \\___/ \\___/| .__/|_|  |_|_| |_|\\__, |\n" +
     "                                                |_|                 |___/");
+
+
+function start() {
+    return new Promise(function (resolve) {
+        logger.info("==========> start init project");
+        resolve('start');
+    });
+}

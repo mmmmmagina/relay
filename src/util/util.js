@@ -5,15 +5,12 @@ var ethUtil = require('ethereumjs-util');
 var BigNumber = require('bignumber.js');
 var BN = require('bn.js');
 
-var Util = function () {
-};
-
-Util.prototype.generateOrderHash = function (input) {
+exports.generateOrderHash = function (input) {
     var buffer = this.generateHashBuffer(input);
     input.orderHash = ethUtil.bufferToHex(buffer);
 };
 
-Util.prototype.generateHashBuffer = function (input) {
+exports.generateHashBuffer = function (input) {
     return solSHA3([
         input.protocol,
         input.owner,
@@ -54,5 +51,3 @@ function solSHA3(args) {
 
     return ABI.soliditySHA3(argTypes, args);
 }
-
-module.exports = new Util();
