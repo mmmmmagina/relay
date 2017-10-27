@@ -22,6 +22,11 @@ module.exports.LoopringProtocolEventType = {
     CUTOFF_TIMESTAMP_CHANGED : "CutoffTimestampChanged"
 };
 
+module.exports.RelayEventType = {
+    SUBMIT_ORDER : "SubmitOrder",
+    CANCEL_ORDER : "CancelOrder"
+};
+
 module.exports.Errors = {
     CANCEL_ORDER_CANCELLED : {code : 6000001, message : ""}
 };
