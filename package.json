@@ -27,6 +27,7 @@
     "connect": "^3.6.5",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
+    "ethereum-blocks": "^1.0.3",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^5.1.2",
     "figlet": "^1.2.0",

@@ -7,6 +7,8 @@ var join = require('path').join;
 var fs = require('fs');
 var redisProxy = require('../proxy/redis-proxy');
 var websocket = require('../client/websocket');
+var ethProxy = require('../proxy/eth');
+var ipfsProxy = require('../proxy/ipfs');
 
 exports.env = function () {
     logger.info("========> Start load env from .env file...");
@@ -60,8 +62,16 @@ exports.redis = function () {
     logger.info("========> end init redis");
 };
 
-exports.agentManager = function () {
+exports.eth = function () {
+    logger.info('========> start ethProxy');
+    ethProxy.init(process.env.ETH_CONN);
+    logger.info("========> ethProxy successful listening on %s",  process.env.ETH_CONN);
+};
 
+exports.ipfs = function () {
+    logger.info('========> start ipfsProxy');
+    ipfsProxy.init([ process.env.IPFS_HOST, process.env.IPFS_PORT, process.env.IPFS_OPTION ]);
+    logger.info("========> ipfsProxy successful listening on %s, %s, %s",  process.env.IPFS_HOST, process.env.IPFS_PORT, process.env.IPFS_OPTION);
 };
 
 exports.jsonrpc = function () {

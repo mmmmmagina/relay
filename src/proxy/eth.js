@@ -1,46 +1,123 @@
 'use strict';
 
 var Web3 = require('web3');
+var consts = require('../constants/const');
+var RingMined = require('../model/ring_mined');
+var OrderFilled = require('../model/order_filled');
+var OrderService = require('../service/orders');
+var redisProxy = require('./redis-proxy').RedisProxy;
+var EventEmitter = require("events").EventEmitter;
+var util = require("util");
+var EthereumBlocks = require('ethereum-blocks');
 
-var EthProxy = function () {
+var EthProxy = function (conn) {
+    EventEmitter.call(this);
     this.web3 = null;
     this.contract = null;
+    this.redisProxy = redisProxy;
 };
 
+util.inherits(EthProxy, EventEmitter);
 
 EthProxy.prototype.connect = function (connection) {
     if (!this.web3) {
         this.web3 = new Web3(new Web3.providers.HttpProvider(connection));
     }
     //TODO abi is a string to config later.
-    var abi = '[{"constant":true,"inputs":[],"name":"FEE_SELECT_MAX_VALUE","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"MARGIN_SPLIT_PERCENTAGE_BASE","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"addresses","type":"address[3]"},{"name":"orderValues","type":"uint256[7]"},{"name":"buyNoMoreThanAmountB","type":"bool"},{"name":"marginSplitPercentage","type":"uint8"},{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"}],"name":"cancelOrder","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"addressList","type":"address[2][]"},{"name":"uintArgsList","type":"uint256[7][]"},{"name":"uint8ArgsList","type":"uint8[2][]"},{"name":"buyNoMoreThanAmountBList","type":"bool[]"},{"name":"vList","type":"uint8[]"},{"name":"rList","type":"bytes32[]"},{"name":"sList","type":"bytes32[]"},{"name":"ringminer","type":"address"},{"name":"feeRecepient","type":"address"},{"name":"throwIfLRCIsInsuffcient","type":"bool"}],"name":"submitRing","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"cutoff","type":"uint256"}],"name":"setCutoff","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"FEE_SELECT_LRC","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"FEE_SELECT_MARGIN_SPLIT","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"}]';
+    var abi = process.env.LOOPRING_PROTOCOL_ABI;
     if (!this.contract) {
         this.contract = this.web3.eth.contract(JSON.parse(abi));
-        this.sigContractInstance =  this.contract.at('0x006effb85f24e7bee5710a4cbc62c2fbaf5f6035');
-        // this.sigContractInstance.MyEvent
+        this.sigContractInstance =  this.contract.at('0xksdfjsdfjk')
     }
 };
 
-EthProxy.prototype.orderFilled = function () {
+EthProxy.prototype.startWatchBlock = function () {
 
+    var blocks = new EthereumBlocks({web3 : this.web3});
+    blocks.registerHandler('myHandler', (eventType, blockId, data) => {
+        switch (eventType) {
+        case 'block':
+            /* data = result of web3.eth.getBlock(blockId) */
+            console.log('Block id', blockId);
+            console.log('Block nonce', data.nonce);
+            break;
+        case 'error':
+            /* data = Error instance */
+            console.error(data);
+            break;
+        }
+    });
+    blocks.start().catch(console.error);
+
+    var filter = this.web3.eth.filter("latest");
+  filter.watch(function (err, rst) {
+      console.log("new block comming");
+      if (err) {
+          console.log('>>>>>>>>>');
+          console.log(err);
+      } else {
+          console.log(rst);
+      }
+  })
 };
 
-EthProxy.prototype.exec = function(method, args, callback) {
-    console.log('method is' + method);
-    console.log('args is' + args);
-    if (args instanceof Array && args.length === 1) {
-        args = args[0];
-    }
+EthProxy.prototype.startWatchEvent = function() {
+    var events = this.sigContractInstance.allEvents();
+    events.watch(function(error, event){
+        if (!error)
+            console.log(event);
 
-    this.web3.eth[method](args, function (err, rst) {
-       if (err) {
-           console.log("err is " + err);
-           return "err invoke " + method;
-       }
-       console.log("invoke rst =============> ");
-       console.log(rst);
-       return callback(rst);
+        if (!event) {
+           console.log("event is undefined");
+           return;
+        }
+
+        var eventName = event.name;
+        switch (eventName) {
+            case consts.LoopringProtocolEventType.RING_MINED:
+
+                var ringMined = new RingMined(event);
+                ringMined.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("insert success");
+                    }
+                });
+
+                break;
+            case consts.LoopringProtocolEventType.ORDER_FILLED:
+                var orderFilled = new OrderFilled(event);
+                orderFilled.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("insert success");
+                        redisProxy.updateCandleTicker(event);
+                        redisProxy.updateDepth(event);
+                    }
+                });
+                break;
+            case consts.LoopringProtocolEventType.ORDER_CANCELLED:
+                OrderService.cancelOrder(event, function (data) {
+                    redisProxy.updateDepth(event);
+                });
+                break;
+            case consts.LoopringProtocolEventType.CUTOFF_TIMESTAMP_CHANGED:
+                var address = event.address;
+                var time = event._time; //block generate time;
+                var cutOff = event._cutoff;
+                var blockNumber = event.blockNumber;
+                OrderService.cancelAllOrders(address, cutOff);
+                break;
+        }
     });
 };
 
-module.exports = new EthProxy();
+module.exports.init = function (conn) {
+    var ethProxy = new EthProxy();
+    ethProxy.connect(conn);
+    ethProxy.startWatchBlock();
+    ethProxy.startWatchEvent();
+    module.exports.EthProxy = ethProxy;
+};

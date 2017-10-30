@@ -43,4 +43,8 @@ IpfsProxy.prototype.orderCanceled = function (msg) {
     }
 };
 
-module.exports = new IpfsProxy();
+module.exports.init = function (conn) {
+    var ipfsProxy = new IpfsProxy();
+    ipfsProxy.connect(conn);
+    module.exports.IpfsProxy = ipfsProxy;
+};
