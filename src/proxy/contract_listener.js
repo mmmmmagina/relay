@@ -5,6 +5,7 @@ var consts = require('../constants/const');
 var RingMined = require('../model/ring_mined');
 var OrderFilled = require('../model/order_filled');
 var OrderService = require('../service/orders');
+var redisProxy = require('./redis-proxy').RedisProxy;
 
 var ContractListener = function (redisProxy) {
     this.web3 = null;
@@ -46,7 +47,6 @@ ContractListener.prototype.exec = function(method, args, callback) {
 };
 
 ContractListener.prototype.startWatch = function() {
-    var redisProxy = this.redisProxy;
     var events = this.sigContractInstance.allEvents();
     events.watch(function(error, event){
         if (!error)

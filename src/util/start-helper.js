@@ -6,6 +6,7 @@ var jsonrpc = require('../client/jsonrpc');
 var join = require('path').join;
 var fs = require('fs');
 var redisProxy = require('../proxy/redis-proxy');
+var websocket = require('../client/websocket');
 
 exports.env = function () {
     logger.info("========> Start load env from .env file...");
@@ -71,6 +72,6 @@ exports.jsonrpc = function () {
 
 exports.websocket = function () {
     logger.info('========> start init websocket');
-    jsonrpc.init(process.env.WEBSOCKET_LISTEN_PORT);
+    websocket.start(process.env.WEBSOCKET_LISTEN_PORT);
     logger.info("========> websocket successful listening on %s",  process.env.WEBSOCKET_LISTEN_PORT);
 };

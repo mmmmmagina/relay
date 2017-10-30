@@ -23,7 +23,21 @@ var RedisProxy = function (config) {
 util.inherits(RedisProxy, EventEmitter);
 
 RedisProxy.prototype.getDepth = function (tokenPair, length, callback) {
-
+    if (typeof length !== 'number' || length < 0) {
+        length = 10;
+    }
+    var mockDepthData = {
+        "market" : "lrc-eth",
+        "depth" : {
+            "buy" : [
+                ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"]
+            ],
+            "sell" : [
+                ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"], ["0x2acd38d8ef93", "0x2acd38d8ef93"]
+            ]
+        }
+    };
+    callback(null, mockDepthData);
 };
 
 RedisProxy.prototype.getTicker = function (tokenPair, length, callback) {

@@ -39,9 +39,11 @@
     "mongoose-paginate": "^5.0.3",
     "object-copy": "^1.0.0",
     "redis": "^2.8.0",
+    "redis-connection-pool": "^1.6.1",
     "socket.io": "^2.0.3",
     "web3": "^0.19.1",
     "winston": "^2.4.0",
-    "winston-daily-rotate-file": "^1.7.2"
+    "winston-daily-rotate-file": "^1.7.2",
+    "ws": "^3.2.0"
   }
 }

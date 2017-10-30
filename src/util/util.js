@@ -51,3 +51,23 @@ function solSHA3(args) {
 
     return ABI.soliditySHA3(argTypes, args);
 }
+
+exports.generateTokenPair = function(s, b) {
+
+    if (typeof s !== 'string' || typeof b !== 'string') {
+        return undefined;
+    }
+
+    var from = s.toLowerCase().trim();
+    var to = b.toLowerCase().trim();
+
+    if ('eth' === from) {
+        return to + '-eth';
+    }
+
+    if ('eth' === to) {
+        return from + '-eth';
+    }
+
+    return from + '-' + to;
+}
