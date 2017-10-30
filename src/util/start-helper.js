@@ -59,8 +59,18 @@ exports.redis = function () {
     logger.info("========> end init redis");
 };
 
-exports.initJsonRpc = function (port, ethAgentManager) {
-    logger.info('start initJsonRpc');
-    jsonrpc.init(port, ethAgentManager);
-    logger.info("end initJsonRpc");
+exports.agentManager = function () {
+
+};
+
+exports.jsonrpc = function () {
+    logger.info('========> start initJsonRpc');
+    jsonrpc.init(process.env.JSONRPC_LISTEN_PORT, process.env.ETH_CONN);
+    logger.info("========> JsonRpc successful listening on %d",  process.env.JSONRPC_LISTEN_PORT);
+};
+
+exports.websocket = function () {
+    logger.info('========> start init websocket');
+    jsonrpc.init(process.env.WEBSOCKET_LISTEN_PORT);
+    logger.info("========> websocket successful listening on %s",  process.env.WEBSOCKET_LISTEN_PORT);
 };

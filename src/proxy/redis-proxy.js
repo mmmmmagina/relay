@@ -37,6 +37,7 @@ RedisProxy.prototype.getCandleTicks = function (tokenPair, length, callback) {
 RedisProxy.prototype.on(consts.LoopringProtocolEventType.ORDER_FILLED, function (event) {
     // update depth
     // update market
+    arguments.forEach(a => {console.log(a);});
 });
 
 RedisProxy.prototype.on(consts.LoopringProtocolEventType.ORDER_CANCELLED, function (event) {

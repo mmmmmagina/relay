@@ -4,7 +4,7 @@ var consts = require('../constants/const');
 //TODO not start
 var io = require('socket.io')();
 
-module.exports.start = function(connection) {
+module.exports.init = function(connection) {
 
     io.on('connection', function(client){
         client.on(consts.WebsocketMsgType.SUBSCRIBE_DEPTH, function(data){
@@ -30,9 +30,5 @@ module.exports.start = function(connection) {
     });
 
     io.listen(connection);
-
-    setInterval(function(){
-        io.sockets.emit(consts.WebsocketMsgType.RESPONSE_DEPTH, redisProxy.getDepth());
-    }, 5000);
 
 };

@@ -16,8 +16,8 @@ start()
     .then(_.mongoose)
     .then(_.redis)
     // .then(_.agentManager)
-    // .then(_.jsonrpc)
-    // .then(_.websocket)
+    .then(_.jsonrpc)
+    .then(_.websocket)
     .then(function () {
         logger.info("==========> Init relay successful");
     })
