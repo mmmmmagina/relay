@@ -1,6 +1,7 @@
 'use strict';
 
 var logger = require('../log/logger').defaultLogger;
+require('dotenv').config({path : "/usr/local/relay/.env"});
 var mongoose = require('mongoose');
 var jsonrpc = require('../client/jsonrpc');
 var join = require('path').join;
@@ -64,7 +65,14 @@ exports.redis = function () {
 
 exports.eth = function () {
     logger.info('========> start ethProxy');
-    ethProxy.init(process.env.ETH_CONN);
+
+    var lastBlockNumber = fs.readFileSync('/usr/local/relay/last_block');
+    if (isNaN(lastBlockNumber)) {
+        logger.error("last block is not a number, %s", lastBlockNumber);
+        throw new Error("last block is not a number");
+    }
+
+    ethProxy.init(process.env.ETH_CONN, process.env.LOOPRING_PROTOCOL_NAME, process.env.LOOPRING_CONTRACT_ADDRESS, lastBlockNumber);
     logger.info("========> ethProxy successful listening on %s",  process.env.ETH_CONN);
 };
 

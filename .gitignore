@@ -37,4 +37,4 @@ node_modules/
 gen-nodejs/
 *.out
 *.log
-coinex/.ensime
+.ethereum_contracts/

@@ -1,6 +1,7 @@
 'use strict';
 
 var Web3 = require('web3');
+require('ethereum-web3-plus');
 var consts = require('../constants/const');
 var RingMined = require('../model/ring_mined');
 var OrderFilled = require('../model/order_filled');
@@ -13,111 +14,124 @@ var EthereumBlocks = require('ethereum-blocks');
 var EthProxy = function (conn) {
     EventEmitter.call(this);
     this.web3 = null;
+    this.contractName = "";
     this.contract = null;
     this.redisProxy = redisProxy;
 };
 
 util.inherits(EthProxy, EventEmitter);
 
-EthProxy.prototype.connect = function (connection) {
+EthProxy.prototype.connect = function (connection, contractName, contractAddress) {
     if (!this.web3) {
         this.web3 = new Web3(new Web3.providers.HttpProvider(connection));
     }
-    //TODO abi is a string to config later.
-    var abi = process.env.LOOPRING_PROTOCOL_ABI;
+
     if (!this.contract) {
-        this.contract = this.web3.eth.contract(JSON.parse(abi));
-        this.sigContractInstance =  this.contract.at('0xksdfjsdfjk')
+        this.web3.solidityCompiler();
+        this.contractName = contractName;
+        console.log(process.env.PWD + "/.ethereum_contracts");
+        this.contract = this.web3.instanceAt(contractName, contractAddress);
     }
 };
 
+//TODO(xiaolu) finish later
 EthProxy.prototype.startWatchBlock = function () {
-
-    var blocks = new EthereumBlocks({web3 : this.web3});
-    blocks.registerHandler('myHandler', (eventType, blockId, data) => {
-        switch (eventType) {
-        case 'block':
-            /* data = result of web3.eth.getBlock(blockId) */
-            console.log('Block id', blockId);
-            console.log('Block nonce', data.nonce);
-            break;
-        case 'error':
-            /* data = Error instance */
-            console.error(data);
-            break;
-        }
-    });
-    blocks.start().catch(console.error);
-
-    var filter = this.web3.eth.filter("latest");
-  filter.watch(function (err, rst) {
-      console.log("new block comming");
-      if (err) {
-          console.log('>>>>>>>>>');
-          console.log(err);
-      } else {
-          console.log(rst);
-      }
-  })
+    //
+    // this.web3.eth.filter("latest", function(error, result){
+    //     console.log("new block comming");
+    //     if (error) {
+    //         console.log('>>>>>>>>>');
+    //         console.log(error);
+    //     } else {
+    //         var block = self.web3.eth.getBlock(blockHash, false);
+    //         for(var i=0; i<block.transactions.length; i++) {
+    //             var txHash=block.transactions[i];
+    //             // var txwait = self.tx_wait[txHash];
+    //             // console.log("transaction watched found", txHash, "waiting",txwait.canonicalAfter,"block(s)");
+    //             var receipt=self.web3.eth.getTransactionReceipt(txHash);
+    //
+    //
+    //         }
+    //
+    //     }
+    // });
 };
 
-EthProxy.prototype.startWatchEvent = function() {
-    var events = this.sigContractInstance.allEvents();
-    events.watch(function(error, event){
-        if (!error)
-            console.log(event);
+EthProxy.prototype.startWatchEvent = function (lastBlockNumber) {
+    var _web3 = this.web3;
+    var newestBlockNumber = _web3.eth.blockNumber;
+    if (newestBlockNumber > lastBlockNumber) {
+        var orderFilledEventName = this.contractName + "." + consts.LoopringProtocolEventType.ORDER_FILLED;
+        var es = _web3.eventSynchronizer([orderFilledEventName]);
+        es.historyFromBlock(lastBlockNumber, function(error, log) {
+            _web3.completeLog(log); // optional: additional function to complete the content of the log message (see below)
+            newEventHandler(error, log);
+            console.log("Log:",log);
+        });
+    }
 
-        if (!event) {
-           console.log("event is undefined");
-           return;
-        }
+    // es.startWatching(function(error, log) {
+    //     newEventHandler(error, log);
+    // });
+};
 
-        var eventName = event.name;
-        switch (eventName) {
-            case consts.LoopringProtocolEventType.RING_MINED:
+function newEventHandler(error, event) {
+    if (!error) {
+        console.log(error);
+    } else if (!event) {
+        console.log("event is undefined");
+    }  else {
+        eventHandler(event);
+    }
+}
 
-                var ringMined = new RingMined(event);
-                ringMined.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("insert success");
-                    }
-                });
+function eventHandler(event) {
 
-                break;
-            case consts.LoopringProtocolEventType.ORDER_FILLED:
-                var orderFilled = new OrderFilled(event);
-                orderFilled.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("insert success");
-                        redisProxy.updateCandleTicker(event);
-                        redisProxy.updateDepth(event);
-                    }
-                });
-                break;
-            case consts.LoopringProtocolEventType.ORDER_CANCELLED:
-                OrderService.cancelOrder(event, function (data) {
+    var eventName = event.name;
+    switch (eventName) {
+        case consts.LoopringProtocolEventType.RING_MINED:
+
+            var ringMined = new RingMined(event);
+            ringMined.save(function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("insert success");
+                }
+            });
+
+            break;
+        case consts.LoopringProtocolEventType.ORDER_FILLED:
+            var orderFilled = new OrderFilled(event);
+            orderFilled.save(function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("insert success");
+                    redisProxy.updateCandleTicker(event);
                     redisProxy.updateDepth(event);
-                });
-                break;
-            case consts.LoopringProtocolEventType.CUTOFF_TIMESTAMP_CHANGED:
-                var address = event.address;
-                var time = event._time; //block generate time;
-                var cutOff = event._cutoff;
-                var blockNumber = event.blockNumber;
-                OrderService.cancelAllOrders(address, cutOff);
-                break;
-        }
-    });
+                }
+            });
+            break;
+        case consts.LoopringProtocolEventType.ORDER_CANCELLED:
+            OrderService.cancelOrder(event, function (data) {
+                redisProxy.updateDepth(event);
+            });
+            break;
+        case consts.LoopringProtocolEventType.CUTOFF_TIMESTAMP_CHANGED:
+            var address = event.address;
+            var time = event._time; //block generate time;
+            var cutOff = event._cutoff;
+            var blockNumber = event.blockNumber;
+            OrderService.cancelAllOrders(address, cutOff);
+            break;
+    }
 };
 
-module.exports.init = function (conn) {
+module.exports.init = function (conn, contractName, contractAddr, lastBlockNumber) {
     var ethProxy = new EthProxy();
-    ethProxy.connect(conn);
+    ethProxy.connect(conn, contractName, contractAddr);
     ethProxy.startWatchBlock();
-    ethProxy.startWatchEvent();
+    ethProxy.startWatchEvent(lastBlockNumber);
     module.exports.EthProxy = ethProxy;
 };
