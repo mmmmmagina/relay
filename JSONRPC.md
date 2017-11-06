@@ -30,6 +30,8 @@ Websocket : wss://{hostname}:{port}/ws
 * [loopring_getFills](#loopring_getfills)
 * [loopring_getCandleTicks](#loopring_getcandleticks)
 * [loopring_getRingsMined](#loopring_getringsmined)
+* loopring_getTokenAssign TODO
+* loopring_getRate TODO
 
 ## Websocket APIs
 * [loopring_subscribeDepth](#loopring_subdepth)
